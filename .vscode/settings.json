@@ -1,0 +1,7 @@
+{
+  "eslint.workingDirectories": [
+    "./packages/core",
+    "./packages/react",
+    "./apps/docs"
+  ]
+}
