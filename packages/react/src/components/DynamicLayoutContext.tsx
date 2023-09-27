@@ -1,3 +1,4 @@
+'use client'
 import { type Item, Layout } from '@dynamic-layout/core'
 import { useRef, type ReactNode, type RefObject, useState, useCallback, type MouseEvent, useEffect } from 'react'
 import { createContext } from 'use-context-selector'
@@ -45,12 +46,14 @@ type Settings = {
 type DynamicLayoutProviderProps = {
   settings: Settings
   allowDrag?: boolean
+  onLayoutChange?: (layout: Layout.ToObjectOutput) => void
   children: ReactNode
 }
 
 export function DynamicLayoutProvider({
   settings,
   allowDrag = false,
+  onLayoutChange = () => {},
   children,
 }: DynamicLayoutProviderProps): ReactNode {
   const [layout, setLayout] = useState(Layout.create(settings))
@@ -122,11 +125,16 @@ export function DynamicLayoutProvider({
     itemBeingDragged.current = null
     lastMouseAxes.current = null
     lastScrollAxes.current = null
-  }, [allowDrag])
+    onLayoutChange(layout.toObject())
+  }, [allowDrag, layout, onLayoutChange])
 
   const applyAutoPosition = useCallback(() => {
-    setLayout((previousLayout) => previousLayout.applyAutoPosition())
-  }, [])
+    setLayout((previousLayout) => {
+      const newLayout = previousLayout.applyAutoPosition()
+      onLayoutChange(newLayout.toObject())
+      return newLayout
+    })
+  }, [onLayoutChange])
 
   return (
     <DynamicLayoutContext.Provider

@@ -33,7 +33,7 @@ export class Layout {
   }: Layout.CreateInput): Layout {
     if (mode === 'fixed' && !rawSliceWidth) throw new Error('Invalid layout')
     if (mode === 'horizontallyResponsive' && !availableWidth) throw new Error('Invalid layout')
-    const sliceWidth = mode === 'fixed' ? rawSliceWidth : availableWidth / totalColumns
+    const sliceWidth = mode === 'fixed' ? rawSliceWidth : (availableWidth - totalColumns * gap) / totalColumns
     const { itemsWithDefinedOccupancy, itemsWithUndefinedOccupancy } = items.reduce<{
       itemsWithDefinedOccupancy: Item[]
       itemsWithUndefinedOccupancy: Layout.AddItemInput[]
@@ -62,6 +62,7 @@ export class Layout {
   }
 
   get totalColumns(): number {
+    if (this.mode === 'horizontallyResponsive') return this.minTotalColumns
     return Math.max(this.occupancies.lastFilledColumn + 3, this.minTotalColumns)
   }
 
@@ -189,6 +190,19 @@ export class Layout {
       [...itemsWithoutItemToMove, itemMoved],
     )
   }
+
+  toObject(): Layout.ToObjectOutput {
+    return {
+      mode: this.mode,
+      sliceHeight: this.sliceHeight,
+      sliceWidth: this.sliceWidth,
+      gap: this.gap,
+      totalColumns: this.totalColumns,
+      totalRows: this.totalRows,
+      widthOfVisibleArea: this.widthOfVisibleArea,
+      items: this.items.map((item) => item.toObject()),
+    }
+  }
 }
 
 export namespace Layout {
@@ -237,5 +251,16 @@ export namespace Layout {
     lastMouseAxes: Axes
     currentScrollAxes: Axes
     lastScrollAxes: Axes
+  }
+
+  export type ToObjectOutput = {
+    mode: LayoutMode
+    sliceHeight: number
+    sliceWidth: number
+    gap: number
+    totalColumns: number
+    totalRows: number
+    widthOfVisibleArea: number
+    items: Item.ToObjectOutput[]
   }
 }

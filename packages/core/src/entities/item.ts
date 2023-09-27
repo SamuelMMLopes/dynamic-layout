@@ -48,6 +48,16 @@ export class Item {
       itemToCompare.startRow <= this.endRow
     )
   }
+
+  toObject(): Item.ToObjectOutput {
+    return {
+      id: this.id,
+      filledColumns: this.filledColumns,
+      filledRows: this.filledRows,
+      startColumn: this.startColumn,
+      startRow: this.startRow,
+    }
+  }
 }
 
 export namespace Item {
@@ -77,5 +87,13 @@ export namespace Item {
   export type YAxisInput = {
     sliceHeight: number
     gap: number
+  }
+
+  export type ToObjectOutput = {
+    id: string
+    startColumn: number
+    startRow: number
+    filledColumns: number
+    filledRows: number
   }
 }

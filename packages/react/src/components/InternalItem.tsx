@@ -64,6 +64,7 @@ function InternalItemComponent({ item, sliceHeight, sliceWidth, gap, style, ...p
       {...props}
       draggable={allowDrag}
       data-is-dragging={isDragging}
+      data-allow-drag={allowDrag}
       style={mergedStyle}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}

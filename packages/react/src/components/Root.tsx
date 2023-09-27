@@ -1,3 +1,4 @@
+'use client'
 import { DynamicLayoutProvider } from './DynamicLayoutContext'
 
 import { type ReactNode, type ComponentProps } from 'react'
